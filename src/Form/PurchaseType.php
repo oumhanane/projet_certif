@@ -2,10 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\Purchase;
+// use App\Entity\Purchase;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class PurchaseType extends AbstractType
 {
@@ -37,7 +38,7 @@ class PurchaseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Purchase::class,
+            // 'data_class' => Purchase::class,
         ]);
     }
 }

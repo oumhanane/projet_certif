@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
+use App\Repository\ListProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @ORM\Entity(repositoryClass=ListProductRepository::class)
  */
-class Product
+class ListProduct
 {
     /**
      * @ORM\Id
@@ -20,22 +20,13 @@ class Product
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToOne(targetEntity=Purchase::class, inversedBy="listProduct", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $name;
+    private $purchase;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $image;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $price;
-
-    /**
-     * @ORM\OneToMany(targetEntity=ContentListProduct::class, mappedBy="product")
+     * @ORM\OneToMany(targetEntity=ContentListProduct::class, mappedBy="listProduct", orphanRemoval=true)
      */
     private $contentListProducts;
 
@@ -49,38 +40,14 @@ class Product
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getPurchase(): ?Purchase
     {
-        return $this->name;
+        return $this->purchase;
     }
 
-    public function setName(string $name): self
+    public function setPurchase(Purchase $purchase): self
     {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): self
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getPrice(): ?int
-    {
-        return $this->price;
-    }
-
-    public function setPrice(int $price): self
-    {
-        $this->price = $price;
+        $this->purchase = $purchase;
 
         return $this;
     }
@@ -97,7 +64,7 @@ class Product
     {
         if (!$this->contentListProducts->contains($contentListProduct)) {
             $this->contentListProducts[] = $contentListProduct;
-            $contentListProduct->setProduct($this);
+            $contentListProduct->setListProduct($this);
         }
 
         return $this;
@@ -107,8 +74,8 @@ class Product
     {
         if ($this->contentListProducts->removeElement($contentListProduct)) {
             // set the owning side to null (unless already changed)
-            if ($contentListProduct->getProduct() === $this) {
-                $contentListProduct->setProduct(null);
+            if ($contentListProduct->getListProduct() === $this) {
+                $contentListProduct->setListProduct(null);
             }
         }
 
