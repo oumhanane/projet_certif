@@ -2,11 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\PurchaseRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PurchaseRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
- * @ORM\Entity(repositoryClass=PurchaseRepository::class)
+ * @ORM\Entity(repositoryClass= PurchaseRepository::class)
+ * @ORM\HasLifecycleCallbacks
  */
 class Purchase
 {
@@ -30,16 +34,19 @@ class Purchase
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message : 'Vous devez renseigner le pays.')
      */
     private $country;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message : 'Vous devez renseigner le code postal.')
      */
     private $postalCode;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message : 'Vous devez renseigner le téléphone.')
      */
     private $telephone;
 
@@ -50,6 +57,7 @@ class Purchase
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message : 'Vous devez renseigner la rue.')
      */
     private $street;
 
@@ -60,8 +68,19 @@ class Purchase
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Assert\NotBlank(message : 'Vous devez renseigner la ville.')
      */
     private $city;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        if (empty($this->createdAt)) {
+            $this->createdAt = new DateTime();
+        }
+    }
 
     public function getId(): ?int
     {
